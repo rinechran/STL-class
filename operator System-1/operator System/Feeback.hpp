@@ -44,7 +44,7 @@ inline bool Feeback<N, STEP>::isBiasTime() {
 
 template<int N, int STEP>
 inline bool Feeback<N, STEP>::update() {
-	if (this->getProcess() || this->mPrecessBuffer.size() || isBiasTime()) {
+	if (this->getProcess() || this->mPrecessBuffer.size() || isBiasTime() || mIsRun) {
 		for (auto & i = this->mPrecessBuffer.begin(); i != mPrecessBuffer.end();) {
 			mBiasTime[0].push_back(*i);
 			i = mPrecessBuffer.erase(i);
