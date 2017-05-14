@@ -41,5 +41,8 @@
     <ClInclude Include="RR.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SJF.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

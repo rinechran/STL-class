@@ -148,6 +148,7 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="Processer.h" />
     <ClInclude Include="RR.hpp" />
+    <ClInclude Include="SJF.hpp" />
     <ClInclude Include="Type.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
