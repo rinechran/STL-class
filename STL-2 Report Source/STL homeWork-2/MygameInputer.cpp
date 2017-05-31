@@ -51,3 +51,9 @@ int MygameInputer::keyBoardMapping() {
 int MygameInputer::getLastKey() {
 	return mLastKey;
 }
+
+std::string MygameInputer::getString() {
+	std::string temp;
+	std::cin >> temp;
+	return temp;
+}

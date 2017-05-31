@@ -34,3 +34,16 @@ void MyGameViwer::goalView() {
 	std::cout << "Goal" << std::endl;
 	system("pause");
 }
+
+void MyGameViwer::fileSaveView() {
+	std::cout << "--------save---------" << std::endl;
+	std::cout << "------replay-filename--" << std::endl;
+	std::cout << "input : ";
+
+}
+
+void MyGameViwer::fileReadView() {
+	std::cout << "file read" << std::endl;
+	std::cout << "file Input : ";
+
+}

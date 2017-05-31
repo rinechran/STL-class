@@ -9,6 +9,9 @@ public:
 	void displayClear();
 	void gameMapView(char pa);
 	void goalView();
+	void fileSaveView();
+	void fileReadView();
+
 
 	template <class T, int H, int W>
 	void MapIterator(T(&pa)[H][W],Player & oth);

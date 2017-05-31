@@ -35,33 +35,87 @@ bool GameLoopFrameWork::move(int x, int y) {
 	return false;
 }
 
-ReplayLoop::ReplayLoop(MyGame * othGame) : GameLoopFrameWork(othGame) {}
+void GameLoopFrameWork::timerStart() {
+	mStart = std::chrono::system_clock::now();
+}
+
+auto GameLoopFrameWork::timerDiff() {
+	mEnd = std::chrono::system_clock::now();
+	auto timer = mEnd - mStart;
+	return mEnd - mStart;
+}
+
+ReplayLoop::ReplayLoop(MyGame * othGame) : GameLoopFrameWork(othGame) {
+}
 
 void ReplayLoop::gameLoop() {
-	while (isLoop()) {
+	//file Read
+	pMygame->mViwer.fileReadView();
+	this->mReplayStroe.fileRead(pMygame->mInputer.getString());
+	timerStart();
+	
+	//this->pMygame->mViwer.MapIterator(mStage.mMap, mPlayer);
+
+	//for (auto i = mReplayStroe.mGameData.begin();
+	//	i != mReplayStroe.mGameData.end();++i) {
+	//	while (timerDiff() <= i->clock) {
+	//		continue;
+	//	}
+	//	this->mPlayer = i->Player;
+	//	render();
+	//}
+	//mReplateriter = this->mReplayStroe.mGameData.begin();
+	while (this->isLoop()) {
 		render();
 		input();
 		update();
+
 	}
+	this->pMygame->mViwer.goalView();
+	this->pMygame->mInputer.getChar();
+
+
+}
+
+void ReplayLoop::update() {
+	mPlayer = mReplayStroe.mReplateriter->Player;
+	++mReplayStroe.mReplateriter;
+}
+
+void ReplayLoop::input() {
+	while (this->timerDiff() <= mReplayStroe.mReplateriter->clock) {
+		continue;
+	}
+}
+
+bool ReplayLoop::isLoop() {
+	return mReplayStroe.mReplateriter
+		== mReplayStroe.mGameData.end() ? false : true;
 }
 
 void ReplayLoop::render() {
-
+	this->pMygame->mViwer.MapIterator(mStage.mMap, mPlayer);
 }
 
-GameLoop::GameLoop(MyGame * othGame) : GameLoopFrameWork(othGame) {}
+GameLoop::GameLoop(MyGame * othGame) : GameLoopFrameWork(othGame) {
+}
 
 void GameLoop::gameLoop() {
+	timerStart();
 	while (isLoop()) {
 		render();
 		input();
 		update();
 	}
+	pMygame->mViwer.fileSaveView();
+	mReplayStroe.fileSave(pMygame->mInputer.getString());
+
+
 }
 
 void GameLoop::update() {
 	int n = pMygame->mInputer.getLastKey();
-
+	//ReplayStore(mPlayer);
 	switch (n)
 	{
 		case KEYBOARD::UP:
@@ -76,13 +130,11 @@ void GameLoop::update() {
 		case KEYBOARD::RIGHT:
 			move(mPlayer.x+1, mPlayer.y);
 			break;
-	default:
-		break;
 	}
+	mReplayStroe.pushData(mPlayer, timerDiff());
 	if (isGoal() == true) {
 		this->pMygame->mViwer.goalView();
 		setChangeLoop();
-
 	}
 
 }
@@ -94,4 +146,35 @@ void GameLoop::input() {
 void GameLoop::render() {
 	this->pMygame->mViwer.MapIterator(mStage.mMap,mPlayer);
 
+}
+
+void ReplayStore::pushData(Player & player, std::chrono::duration<double> diff) {
+	auto end = std::chrono::system_clock::now();
+
+	mGameData.push_back(ReplayData
+	{ diff,player }
+	);
+}
+
+void ReplayStore::fileSave(std::string & filename) {
+	std::ofstream outer(filename + ".dat", std::ios::binary);
+	size_t i = mGameData.size();
+	outer.write(
+		reinterpret_cast<char*>(&i),
+		sizeof(i)
+	);
+	outer.write(
+		reinterpret_cast<char*>(&mGameData[0]),
+		sizeof(ReplayData) *mGameData.size()
+	);
+}
+
+void ReplayStore::fileRead(std::string & filename) {
+	std::ifstream inputer(filename + ".dat", std::ios::binary);
+	std::size_t size = 0;
+	inputer.read(reinterpret_cast<char*>(&size), sizeof(size));
+	mGameData.resize(size);
+	inputer.read(reinterpret_cast<char*>(&mGameData[0]), size * sizeof(ReplayData));
+
+	mReplateriter = mGameData.begin();
 }

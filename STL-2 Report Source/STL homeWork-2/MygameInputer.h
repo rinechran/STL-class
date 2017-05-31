@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 
 class MyGame;
 
@@ -21,6 +22,7 @@ public:
 	int getChar();
 	int keyBoardMapping();
 	int getLastKey();
+	std::string getString();
 
 private:
 	MyGame * pMyGmae;
